@@ -1,9 +1,5 @@
-import os
 import pymongo
-from check_file_free import _file_path, _logger_check_file_free
 from config import mongo_config as config
-from datetime import datetime
-import time
 
 _COLLECTION_NAME = "dlogging"
 
@@ -30,34 +26,11 @@ class DAL(object):
     def insert_many(self, docs):
         self._collection.insert_many(docs)
 
+    def count(self):
+        return self._collection.find({}).count()
 
-
-def parse_line(line):
-    parts = line.split("#")
-    return {
-        "time": datetime.strptime(parts[0], "%Y-%m-%d %H:%M:%S.%f"),
-        "source": parts[1],
-        "level": parts[2],
-        "message": parts[3]
-
-    }
-
-
-if __name__ == "__main__":
-    dal = DAL()
-    dal.connect()
-
-    while True:
-        if os.path.exists(_file_path):
-            cur_docs = []
-            with open(_file_path, "r") as fdr:
-                for line in fdr:
-                    doc = parse_line(line)
-                    cur_docs.append(doc)
-            os.remove(_file_path)
-            dal.insert_many(cur_docs)
-        time.sleep(30)
-
-
-
-
+    def get(self, level, _from=None):
+        filter = {"level": {"$gte":level}}
+        if _from is not None:
+            filter["time"] = {"$gt": _from}
+        return self._collection.find(filter)

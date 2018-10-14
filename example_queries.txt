@@ -1,1 +1,1 @@
-db.getCollection('dlogging').find({"level":"critical", "time": {"$gt": ISODate("2018-10-13 12:58:15.208Z"), "$lt": ISODate("2018-10-15 12:58:15.208Z")}})
+db.getCollection('dlogging').find({"level": 40, "time": {"$gt": ISODate("2018-10-13 12:58:15.208Z"), "$lt": ISODate("2018-10-15 12:58:15.208Z")}})

@@ -1,13 +1,12 @@
 import os
 import re
 
-_file_name = 'the_log_file.log'
+
 _home_dir = os.path.expanduser('~')
 _dlogging_home = os.path.join(_home_dir, "dlogging")
 if not os.path.exists(_dlogging_home):
     os.makedirs(_dlogging_home)
-_file_path = os.path.join(_dlogging_home, _file_name)
-_updater_pid_file = 'dlogging/updater.pid'
+_updater_pid_file = os.path.join(_dlogging_home,'updater.pid')
 
 
 def iterate_fds(pid):
@@ -40,10 +39,14 @@ def _get_updater_pid():
     return pid
 
 
-def _logger_check_file_free():
-    pid = _get_updater_pid()
+def _check_file_free(pid, file_path):
     if pid is not None:
         for fd, file in iterate_fds(pid):
-            if file == _file_path:
+            if file == file_path:
                 return False
     return True
+
+
+def _logger_check_file_free(file_path):
+    pid = _get_updater_pid()
+    return _check_file_free(pid, file_path)
