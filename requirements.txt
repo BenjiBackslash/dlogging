@@ -1,0 +1,2 @@
+PyMongo==3.7.1
+pyyaml==3.13
